@@ -108,8 +108,8 @@ class QdrantService:
 
 if __name__ == "__main__":
     # Example workflow
-    doc_serivce = DocumentService() # implemented
-    docs = doc_serivce.create_documents() # NOT implemented
+    doc_service = DocumentService() # implemented
+    docs = doc_service.create_documents() # NOT implemented
 
     index = QdrantService() # implemented
     index.connect() # implemented
