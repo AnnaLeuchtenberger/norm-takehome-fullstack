@@ -24,6 +24,7 @@ import os
 # Pydantic models
 # -----------------
 
+
 class Input(BaseModel):
     query: str
     file_path: str
@@ -47,6 +48,7 @@ class Output(BaseModel):
 
 class DocumentService:
     """Handles document ingestion into LlamaIndex Documents (ready for embedding)."""
+
     # NOTE: In real-world LlamaIndex usage, you would typically load one Document per file,
     # then parse it into multiple Nodes before embedding. We skip that step here by design.
 
