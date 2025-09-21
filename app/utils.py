@@ -95,7 +95,7 @@ class QdrantService:
             if "food" in q or "baker" in q or "flour" in q or "bread" in q:
                 return Output(
                     query=user_query,
-                    response="A baker who mixes sawdust in his flour might be fined, or whipped if he cannot pay.",
+                    response="Food safety violations may result in fines or whipping.",
                     citations=[
                         Citation(
                             source="Laws of the Seven Kingdoms, §11.1",

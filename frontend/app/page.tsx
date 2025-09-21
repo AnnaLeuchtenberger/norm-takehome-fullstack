@@ -17,6 +17,7 @@ type SearchResponse = {
 export default function Page() {
   const [query, setQuery] = useState('');
   const [data, setData] = useState<SearchResponse | null>(null);
+  const [showJson, setShowJson] = useState(false);
 
   async function runSearch() {
     const res = await fetch(
@@ -24,21 +25,50 @@ export default function Page() {
     );
     const json = await res.json();
     setData(json);
+    setQuery(''); // clear input
   }
 
   return (
     <>
       <HeaderNav signOut={() => {}} />
       <main style={{ padding: '2rem' }}>
-        <h1>Norm Ai – Search Demo</h1>
+        <h1 style={{ textAlign: "right" }}>Norm Ai – Search Demo</h1>
 
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Enter your query..."
-        />
-        <button onClick={runSearch}>Search</button>
+        {/* Example questions + search box */}
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          {/* Example buttons */}
+          <div style={{ marginBottom: '1rem' }}>
+            <button onClick={() => setQuery("Which crimes result in amputation?")}>
+              Ask: Which crimes result in amputation?
+            </button>
+            <button
+              style={{ marginLeft: '1rem' }}
+              onClick={() => setQuery("Is it against the law to sell bad food?")}
+            >
+              Ask: Is it against the law to sell bad food?
+            </button>
+          </div>
+
+          {/* Search bar */}
+          <div>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Enter thy query of the law..."
+              style={{
+                width: '400px',
+                maxWidth: '100%',
+                marginRight: '0.5rem',
+                padding: '0.5rem',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+              }}
+            />
+            <button onClick={runSearch}>Search</button>
+          </div>
+        </div>
+
 
         {data && (
           <section style={{ marginTop: '2rem' }}>
@@ -53,7 +83,7 @@ export default function Page() {
             </p>
 
             {/* Citations */}
-            <h3 style={{ marginBottom: '0.5rem' }}>Citations</h3>
+            <div style={{ marginTop: '3rem' }}></div>
             <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
               {data.citations.map((c, i) => (
                 <li
@@ -71,13 +101,21 @@ export default function Page() {
                 </li>
               ))}
             </ul>
+            <div style={{ marginBottom: '2rem' }}></div>
           </section>
         )}
 
         {/* Keep raw JSON for debugging */}
-        <pre style={{ marginTop: '2rem', color: 'gray' }}>
-          {data ? JSON.stringify(data, null, 2) : 'No results yet'}
-        </pre>
+        <div style={{ marginTop: '7rem' }}>
+          <button onClick={() => setShowJson(!showJson)}>
+            {showJson ? "Hide Raw API Response" : "Show Raw API Response"}
+          </button>
+          {showJson && (
+            <pre style={{ color: 'gray', marginTop: '1rem' }}>
+              {data ? JSON.stringify(data, null, 2) : 'No results yet'}
+            </pre>
+          )}
+        </div>
       </main>
     </>
   );
