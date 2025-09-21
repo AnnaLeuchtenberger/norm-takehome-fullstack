@@ -89,13 +89,41 @@ class QdrantService:
         self.index.insert_nodes(docs)
 
     def query(self, user_query: str) -> Output:
+        # --- Stub implementation for testing without external API keys ---
         if self.use_stub or not self.index:
-            # --- STUB for testing ---
-            return Output(
-                query=user_query,
-                response=f"Stubbed response for query: {user_query}",
-                citations=[Citation(source="stub.pdf", text="Fake citation text")],
-            )
+            q = user_query.lower()
+            if "food" in q or "baker" in q or "flour" in q or "bread" in q:
+                return Output(
+                    query=user_query,
+                    response="A baker who mixes sawdust in his flour might be fined, or whipped if he cannot pay.",
+                    citations=[
+                        Citation(
+                            source="Laws of the Seven Kingdoms, §11.1",
+                            text="A baker who mixes sawdust in his flour, might be fined. If such a fine cannot be paid, he might be whipped instead."
+                        )
+                    ]
+                )
+            elif "hand" in q or "finger" in q or "amputation" in q or "thief" in q or "steal" in q:
+                return Output(
+                    query=user_query,
+                    response="Certain crimes can result in the loss of a finger or a hand, including thievery and poaching.",
+                    citations=[
+                        Citation(
+                            source="Laws of the Seven Kingdoms, §6.1–6.2",
+                            text="It is customary for a thief to be punished by losing a finger or a hand. Pickpockets can likewise be punished by cutting off a hand."
+                        ),
+                        Citation(
+                            source="Laws of the Seven Kingdoms, §7.1",
+                            text="Poaching is forbidden... punishments for poaching can include being forced to join the Night's Watch, losing a hand, or being forced to row ships."
+                        )
+                    ]
+                )
+            else:
+                return Output(
+                    query=user_query,
+                    response=f"No specific law found for query: {user_query}",
+                    citations=[]
+                )
 
         # --- Real implementation ---
         query_engine = self.index.as_query_engine(similarity_top_k=self.k)
