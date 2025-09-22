@@ -48,29 +48,37 @@ This repository implements a FastAPI service that ingests a PDF of laws (`docs/l
 
 Example request:
 ```
-GET http://127.0.0.1:8000/search?query=peace
+GET http://127.0.0.1:8000/search?query=bread
 ```
 
 ```json
 {
-  "results": [
+  "query": "bread",
+  "response": "Food safety violations may result in fines or whipping.",
+  "citations": [
     {
-      "text": "The law requires petty lords and landed knights to take their disputes to court.",
-      "score": 0.87
+      "source": "Laws of the Seven Kingdoms, §11.1",
+      "text": "A baker who mixes sawdust in his flour, might be fined. If such a fine cannot be paid, he might be whipped instead."
     }
   ]
 }
 ```
-<!-- TODO: Replace this example output with the actual stubbed response from your QdrantService if it looks different -->
+
 
 ---
 
 ## Design Choices & Assumptions
-- **Stubbed Qdrant:** By default, the service runs in stub mode. *No OpenAI or Qdrant API keys are required* for this exercise.  
-- **Simple contract:** The API is intentionally minimal — a single `/search` endpoint returning a typed `Output` model.  
-- **Swagger as client:** Reviewers are expected to test via the built-in Swagger docs rather than curl/Postman.  
-- **Containerization:** Docker support is included for a consistent runtime environment.  
-
+- **Proof of Concept** This project assumes it is a proof of concept for the client, and that the functionality expectations will stay within clearly delimited guardrails during the demo.- **Stubbed Qdrant:** As such, the service runs in stub mode by default. *No OpenAI or Qdrant API keys are required* for this exercise.  
+- **Stubbed Responses:**  
+  - The backend currently supports two canned answers:  
+    - **Baker response:** triggered by the keywords `"food"`, `"baker"`, `"flour"`, or `"bread"`.  
+    - **Thief response:** triggered by the keywords `"hand"`, `"finger"`, `"amputation"`, `"thief"`, or `"steal"`.  
+  - If a query matches one of these keyword sets, the service returns the corresponding canned JSON response (see above).  
+  - Any other query will return an empty `results` array.  
+  - Combining these two queries is currently not supported.
+- **Lightweight:** The API is designed to be as lightweight as possible — a single `/search` endpoint returning a typed `Output` model. 
+- **Swagger Testing:** Reviewers are expected to test via the built-in Swagger docs rather than curl/Postman.  
+- **Containerization:** Docker support is included for a consistent runtime environment. 
 ---
 
 ## Client
