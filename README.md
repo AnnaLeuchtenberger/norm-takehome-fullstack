@@ -5,9 +5,10 @@ This repository implements a FastAPI service that ingests a PDF of laws (`docs/l
 ## Running the Application
 
 ### Prerequisites
-- Python 3.11+
+- Python 3.11 (this project was developed and tested against 3.11.x)
+  > Note: some pinned dependencies (llama-index 0.7.14, qdrant-client 1.4.0) are not compatible with Python 3.12 or 3.13.
 - [Poetry](https://python-poetry.org/) or `pip` / `venv`
-- Docker (optional, if you want to run inside a container)
+- Docker (optional, for running in a container if you don’t want to manage Python locally)
 
 ### Local Development
 
