@@ -1,86 +1,118 @@
-# Norm AI Take-Home — Server
+# Norm AI Take-Home — Fullstack Demo
 
-This repository implements a FastAPI service that ingests a PDF of laws (`docs/laws.pdf`), indexes them into Qdrant, and exposes a simple search endpoint.
+This project implements a FastAPI service that ingests a PDF of laws (`docs/laws.pdf`), indexes them into Qdrant using OpenAI embeddings, and exposes a `/search` endpoint.  
+A lightweight Next.js frontend is included to demonstrate querying the service and displaying results with citations.
 
-## Running the Application
+---
 
-### Prerequisites
-- Python 3.11 (this project was developed and tested against 3.11.x)
-  > Note: some pinned dependencies (llama-index 0.7.14, qdrant-client 1.4.0) are not compatible with Python 3.12 or 3.13.
-- [Poetry](https://python-poetry.org/) or `pip` / `venv`
-- Docker (optional, for running in a container if you don’t want to manage Python locally)
+## Running the Backend
 
-### Local Development
+### Option 1: Local (Python)
 
-1. **Clone the repo and install dependencies**
-   ```bash
-   git clone https://github.com/AnnaLeuchtenberger/norm-takehome-fullstack.git
-   cd norm-takehome-fullstack
-   poetry install   # or: pip install -r requirements.txt
-   ```
+**Prerequisites**  
+- Python 3.11  
+- `pip` (or Poetry/venv if you prefer)
 
-2. **Start the FastAPI server**
-   ```bash
-   uvicorn app.main:app --reload
-   ```
-
-3. **Open the Swagger docs**
-   Once running, navigate to:
-   ```
-   http://127.0.0.1:8000/docs
-   ```
-   You can use this interactive UI to issue queries against the `/search` endpoint.
-
-### Using Docker
-1. **Build the image:**
-   ```bash
-   docker build -t norm-server .
-   ```
-2. **Run the container:**
-   ```bash
-   docker run -p 8000:8000 norm-server
-   ```
-3. Visit Swagger at [http://localhost:8000/docs](http://localhost:8000/docs).
-
-## Querying the Service
-- **Endpoint:** `GET /search`  
-- **Parameter:** `query` (string) — the search query  
-- **Response:** JSON containing matching results from Qdrant (*stubbed unless a real API key is configured*)  
-
-Example request:
-```
-GET http://127.0.0.1:8000/search?query=bread
+```bash
+git clone https://github.com/AnnaLeuchtenberger/norm-takehome-fullstack.git
+cd norm-takehome-fullstack
+pip install -r requirements.txt
+export OPENAI_API_KEY=sk-proj...   # your API key
+uvicorn app.main:app --reload
 ```
 
+The API will be available at [http://127.0.0.1:8000](http://127.0.0.1:8000).  
+Swagger docs are at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
+
+---
+
+### Option 2: Docker
+
+**Prerequisites**  
+- Docker
+
+```bash
+docker build -t norm-fullstack .
+docker run -e OPENAI_API_KEY=sk-proj... -p 8000:8000 norm-fullstack
+```
+
+Then visit [http://localhost:8000/docs](http://localhost:8000/docs) to interact with the API.
+
+---
+
+## Querying the Backend
+
+**Endpoint:**  
+```
+GET /search?query=your+question
+```
+
+**Example:**  
+```bash
+curl "http://127.0.0.1:8000/search?query=steal"
+```
+
+**Example Response:**  
 ```json
 {
-  "query": "bread",
-  "response": "Food safety violations may result in fines or whipping.",
+  "query": "steal",
+  "response": "Those who engage in stealing may face punishments such as losing a finger or a hand...",
   "citations": [
     {
-      "source": "Laws of the Seven Kingdoms, §11.1",
-      "text": "A baker who mixes sawdust in his flour, might be fined. If such a fine cannot be paid, he might be whipped instead."
+      "source": "laws.pdf",
+      "text": "6. Thievery\n6.1. It is customary for a thief..."
     }
   ]
 }
 ```
 
+---
+
+## Running the Frontend
+
+The `frontend` folder contains a Next.js app that calls the backend and displays results.
+
+**Local development:**
+
+```bash
+cd frontend
+npm install --legacy-peer-deps   # resolves peer dependency conflicts
+npm run dev
+```
+
+The app will be live at [http://localhost:3000](http://localhost:3000).  
+It will send queries to the backend running at [http://127.0.0.1:8000/search].
 
 ---
 
-## Design Choices & Assumptions
-- **Proof of Concept** This project assumes it is a proof of concept for the client, and that the functionality expectations will stay within clearly delimited guardrails during the demo.- **Stubbed Qdrant:** As such, the service runs in stub mode by default. *No OpenAI or Qdrant API keys are required* for this exercise.  
-- **Stubbed Responses:**  
-  - The backend currently supports two canned answers:  
-    - **Baker response:** triggered by the keywords `"food"`, `"baker"`, `"flour"`, or `"bread"`.  
-    - **Thief response:** triggered by the keywords `"hand"`, `"finger"`, `"amputation"`, `"thief"`, or `"steal"`.  
-  - If a query matches one of these keyword sets, the service returns the corresponding canned JSON response (see above).  
-  - Any other query will return an empty `results` array.  
-  - Combining these two queries is currently not supported.
-- **Lightweight:** The API is designed to be as lightweight as possible — a single `/search` endpoint returning a typed `Output` model. 
-- **Swagger Testing:** Reviewers are expected to test via the built-in Swagger docs rather than curl/Postman.  
-- **Containerization:** Docker support is included for a consistent runtime environment. 
+## Reviewer Quick Start
+
+If you just want to see it running end-to-end:
+
+1. **Start backend in Docker:**
+   ```bash
+   docker build -t norm-fullstack .
+   docker run -e OPENAI_API_KEY=sk-... -p 8000:8000 norm-fullstack
+   ```
+2. **Start frontend in dev mode:**
+   ```bash
+   cd frontend
+   npm install --legacy-peer-deps
+   npm run dev
+   ```
+3. Open:
+   - [http://localhost:3000](http://localhost:3000) → frontend demo UI  
+   - [http://localhost:8000/docs](http://localhost:8000/docs) → backend Swagger UI  
+
 ---
 
-## Client
-See the `frontend` folder for the Next.js client, which demonstrates calling this service. It has its own README with setup instructions.
+## Design Choices
+
+- **Document parsing:** `laws.pdf` is split into top-level sections (e.g., “6. Thievery”) and first-level clauses (e.g., “6.1”, “6.2”), while deeper subclauses remain grouped together for context.  
+- **Backend:** FastAPI service with a single `/search` endpoint, returning structured `Output` objects with response + citations.  
+- **Vector storage:** Qdrant is used as the vector index; embeddings are generated with OpenAI’s `text-embedding-3-small`.  
+- **LLM synthesis:** Responses are generated with `gpt-3.5-turbo`, combining retrieved clauses into a natural-language answer.  
+- **Frontend:** Simple Next.js UI with prefilled example queries and a display of citations for transparency.  
+- **Containerization:** Docker image provided for consistent backend setup.
+
+---

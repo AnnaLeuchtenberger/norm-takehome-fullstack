@@ -1,12 +1,12 @@
 # Norm AI Take-Home — Client
 
-This is a minimal React [Next.js](https://nextjs.org/) application that provides a simple UI for querying the FastAPI backend.
+This is a minimal [Next.js](https://nextjs.org/) application that provides a simple UI for querying the FastAPI backend.
 
 ## Running the Application
 
 ### Prerequisites
 - Node.js 18+  
-- npm / yarn / pnpm / bun (choose one)  
+- npm / yarn / pnpm / bun (choose one) 
 
 ### Local Development
 
@@ -33,26 +33,21 @@ This is a minimal React [Next.js](https://nextjs.org/) application that provides
 
 - Type a question into the search box and press **Search**.  
 - Or click one of the **example question buttons** to auto-fill the search box.  
-- The response from the backend will be displayed below the search box.  
+- The response from the backend will be displayed below the search box with citations.
 
 **Example flow:**  
-1. Run the backend (`uvicorn app.main:app --reload`)  
+1. Run the backend (via `uvicorn` or Docker)  
 2. Run the frontend (`npm run dev`)  
 3. Navigate to [http://localhost:3000](http://localhost:3000) and try:  
    ```
    Ask: Which crimes result in amputation?
    ```
 
+---
 
 ## Design Choices & Assumptions
 
-- **Proof of concept** This project assumes it is a proof of concept for the client, and that the functionality expectations will stay within clearly delimited guardrails during the demo.
-- **Stubbed backend:** The client calls the `/search` endpoint, which uses a stubbed Qdrant service unless configured otherwise. This is not a fully formed app (yet).
-- **Example queries:** Hard-coded buttons demonstrate how to issue typical queries. Two answers are stubbed out - one about bakers, one about thieves. The goal is to make it easy for someone demo-ing this to the client - just click a button, and the search bar is prepopulated. 
-- **Minimal search functionality** The logic powering the example queries also enables some custom queries, albeit ones leading to the same two answers. The "baker" answer is triggered by any of these words: "food," "baker," "flour," or "bread". The "thief" answer is triggered by any of these words: "hand"  "finger,"  "amputation,"  "thief," or "steal." Combining these two queries is currently not supported. 
-- **Lightweight UI:** Minimal styling, neutral UI. The assumption is that the client is evaluating for functionality and intuitive understanding of the site's flow, not customization -- their own UI will come later. 
----
-
-## Server
-
-See the `app` folder for the FastAPI backend service, including setup instructions.
+- **Proof of concept:** The frontend is intentionally minimal, designed to demonstrate backend functionality and end-to-end flow.  
+- **Live backend integration:** Queries are sent to the FastAPI `/search` endpoint, which returns synthesized answers with citations from `laws.pdf`.  
+- **Example queries:** Hard-coded buttons make it easy to demo common queries without typing.  
+- **Lightweight UI:** Minimal styling, neutral look. The assumption is that the client is evaluating functionality and clarity of flow, not polish.  
