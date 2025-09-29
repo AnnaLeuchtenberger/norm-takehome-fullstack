@@ -5,11 +5,9 @@ openai==1.82.0
 tiktoken==0.7.0
 pypdf==4.1.0
 
-# qdrant: pick pre-fastembed version to avoid IDF_EMBEDDING_MODELS bug
 qdrant-client==1.6.9
 
-# llama-index ecosystem — compatible set
-llama-index-core==0.10.46
+llama-index-core==0.10.40
 llama-index-embeddings-openai==0.1.9
 llama-index-llms-openai==0.1.9
-llama-index-readers-file==0.1.9
+llama-index-readers-file==0.1.3
