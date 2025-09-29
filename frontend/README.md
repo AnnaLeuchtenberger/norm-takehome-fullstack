@@ -51,3 +51,10 @@ This is a minimal [Next.js](https://nextjs.org/) application that provides a sim
 - **Live backend integration:** Queries are sent to the FastAPI `/search` endpoint, which returns synthesized answers with citations from `laws.pdf`.  
 - **Example queries:** Hard-coded buttons make it easy to demo common queries without typing.  
 - **Lightweight UI:** Minimal styling, neutral look. The assumption is that the client is evaluating functionality and clarity of flow, not polish.  
+
+## Assumptions & Limitations
+
+- **Scope:** The frontend is intentionally minimal, focusing on demonstrating backend functionality end-to-end. UI polish, state management complexity, and responsive design were assumed out of scope.  
+- **Backend contract:** The client assumes a backend running locally on port `8000` with a `/search` endpoint. No environment configuration or fallback logic was added.  
+- **Queries:** Example buttons are provided to make demoing simple, but free-text queries rely entirely on backend capabilities. No client-side reranking or caching was added.  
+- **Limitations:** Error states and loading indicators are minimal. The app is meant for evaluation of flow and clarity, not production readiness.  

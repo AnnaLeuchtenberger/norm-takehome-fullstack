@@ -116,3 +116,11 @@ If you just want to see it running end-to-end:
 - **Containerization:** Docker image provided for consistent backend setup.
 
 ---
+
+## Assumptions & Limitations
+
+- **Scope:** The backend ingests and indexes a single PDF (`docs/laws.pdf`). Multi-document ingestion, schema evolution, and production deployment were assumed out of scope for this demo.  
+- **Technical:** Embeddings are generated using OpenAI’s `text-embedding-3-small` for cost/performance balance. Qdrant runs in-memory by default for simplicity.  
+- **LLM choice:** Responses are synthesized with `gpt-3.5-turbo`. Larger models could improve quality but were not used here to stay within credit limits.  
+- **Error handling:** Minimal; the focus was on implementing the core search + citation loop. Authentication and retry logic are not included.  
+- **Deployment:** Docker support is provided for consistency, but advanced infra (e.g. cloud deployment, CI/CD, secrets management) was not implemented.  
